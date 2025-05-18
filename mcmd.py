@@ -60,7 +60,7 @@ def run_command(command, commanddescription, port, username, password, defaultsh
     for ip in ip_list:
         ip = ip.strip()
         print(f"Running {commanddescription} on IP: ", ip)
-        setup_ssh(ip, command, commanddescription, port, username, password, defaultshowerrors, output=output, error=error, log=log)
+        setup_ssh(ip, command, port, username, password, defaultshowerrors, output=output, error=error, log=log)
 
 
 def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=False, error=False, log=False):
@@ -119,7 +119,7 @@ def main():
     if args.unsecure:
         password_to_use = password
     else:
-        password_input = getpass.getpass(prompt='Enter password: ')
+        password_input = getpass.getpass(prompt='Enter password for remote device(s): ')
         if not password_input:
             print("No password entered, using default password from config file")
             password_to_use = password
