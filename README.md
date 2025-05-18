@@ -1,54 +1,63 @@
-# Mass Command
+# MCMD - Multi-Command Remote Executor
 
-# mcmd.py
-
-A Python script to run a shell command or script on multiple remote devices via SSH, using a list of IP addresses. Supports logging, verbose output, and error display customization.
+MCMD is a Python script for running commands or scripts on multiple remote hosts via SSH. It is designed for flexibility, security, and ease of use, supporting both interactive and non-interactive password entry, logging, and robust argument parsing.
 
 ## Features
-- Run a custom shell command or script on a list of IPs (from `iplist.txt`)
-- SSH authentication (username/password)
-- Optional logging of all output to `output.log`
-- Verbose and very verbose output modes
-- Configurable error display
-- Timestamped log entries
+
+- **Configurable via JSON**: All connection and command details are stored in `config.json` for easy editing and separation from code.
+- **Secure Password Handling**: By default, the script prompts for the SSH password at runtime. Optionally, you can use the `--unsecure` flag to use the password from the config file (not recommended for production).
+- **Argument Parsing with Error Handling**: Uses argparse to handle command-line arguments. If unsupported flags are used, the script displays a clear error message and help text.
+- **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts, or run a command as specified in the config.
+- **Verbose and Error Output**: Use `--verbose` to display command output, and `-vv` to display both output and errors.
+- **Logging**: Use `--log` to save all output and errors to `output.log`.
+- **IP List Management**: Reads target IPs from `iplist.txt`. Warns if the file is missing or empty.
+- **Default Value Warnings**: Warns if you are using default values for script path or command, prompting you to update your config.
 
 ## Usage
 
-1. **Prepare your IP list:**
-   - Place all target IP addresses (one per line) in a file named `iplist.txt` in the same directory as the script.
-
-2. **Set credentials and command:**
-   - Edit the script to set the correct SSH `username`, `password`, and `port` if needed.
-   - Set the `command` variable to the shell command you want to run.
-   - Optionally, set `commanddescription` for log readability.
-
-3. **Run the script:**
-   ```bash
-   python3 mcmd.py [options]
-   ```
+```bash
+python3 mcmd.py [OPTIONS]
+```
 
 ### Options
-- `-s`, `--script`   : Run a specified script on the remote device (set `script_path` in the script)
-- `-v`, `--verbose`  : Print standard output from the command
-- `-vv`              : Print both standard output and standard error
-- `-l`, `--log`      : Log all output to `output.log`
 
-### Example
-```bash
-python3 mcmd.py -v -l
-```
-This will print standard output to the console and log all output to `output.log`.
+- `--unsecure`, `-u`   : Use the password from `config.json` instead of prompting (not recommended for production)
+- `--script`, `-s`     : Run the script specified in the config on remote hosts
+- `--verbose`, `-v`    : Display command output in the console
+- `-vv`                : Display both output and errors in the console
+- `--log`, `-l`        : Log all output and errors to `output.log`
+
+If you use an unsupported flag, the script will display a message and show the help text.
 
 ## Configuration
-- **defaultshowerrors**: Set to `True` or `False` in the script to control whether errors are shown by default.
-- **script_path**: Set the absolute path to your script if using the `--script` flag.
 
-## Log File
-- All log entries are timestamped and grouped by command batch for easy parsing.
+Edit `config.json` to set your connection and command details. Example:
 
-## Requirements
-- Python 3
-- `paramiko` library (install with `pip install paramiko`)
+```json
+{
+    "username": "youruser",
+    "password": "yourpassword", // Only used with --unsecure
+    "port": 22,
+    "showerrorsdefault": true,
+    "script_path": "/path/to/your/script.sh",
+    "command": "ls -l",
+    "commanddescription": "List directory contents"
+}
+```
+**Note:** JSON does not support comments. Remove any `//` lines before running.
 
+## Security Notes
+- **Do not store real passwords in `config.json` unless using `--unsecure` for testing.**
+- For best security, use SSH keys or enter passwords interactively.
 
-*Created for mass remote command execution and troubleshooting.*
+## Example
+
+```bash
+python3 mcmd.py --script --verbose --log
+```
+Runs the script on all IPs in `iplist.txt`, prints output, and logs results.
+
+## Troubleshooting
+- If you see a message about default values, update your `config.json`.
+- If you use an unsupported flag, you'll see a clear error and the help text.
+- Make sure `iplist.txt` exists and contains one IP per line.
