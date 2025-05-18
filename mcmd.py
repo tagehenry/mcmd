@@ -128,6 +128,7 @@ def main():
     
     if args.script:
         print("======= Remote Script Mode ========\n")
+        commanddescription = f"Remote Script: {script_path}"
 
     if args.log:
         print("========= Logging Enabled =========\n")
