@@ -128,7 +128,7 @@ def main():
 
     if args.script:
         if "/path/to/your/script.sh" in script_path:
-            print("The default script path is being used, please change it to your own script")
+            print("The default script path is being used, please edit the config.json file and change it to your own script path")
             exit()
         if args.verbose:
             run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log)
@@ -139,7 +139,7 @@ def main():
 
     elif args.verbose or args.vv:
         if "command to run on remote device" in command:
-            print("The default command is being used, please change it to your own command")
+            print("The default command is being used, please edit the config.json file and change it to your own command")
             exit()
         if args.verbose:
             run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log)
@@ -147,7 +147,7 @@ def main():
             run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log)
     else:
         if "command to run on remote device" in command:
-            print("The default command is being used, please change it to your own command")
+            print("The default command is being used, please edit the config.json file and change it to your own command")
             exit()
         run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log)
 
