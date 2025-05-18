@@ -24,7 +24,7 @@ A Python script to run a shell command or script on multiple remote devices via 
 
 3. **Run the script:**
    ```bash
-   python3 runcommandinmass.py [options]
+   python3 mcmd.py [options]
    ```
 
 ### Options
@@ -35,7 +35,7 @@ A Python script to run a shell command or script on multiple remote devices via 
 
 ### Example
 ```bash
-python3 runcommandinmass.py -v -l
+python3 mcmd.py -v -l
 ```
 This will print standard output to the console and log all output to `output.log`.
 
