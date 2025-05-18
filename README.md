@@ -71,3 +71,7 @@ Runs the script on all IPs in `iplist.txt`, prints output, and logs results.
 - If you use an unsupported flag, you'll see a clear error and the help text.
 - Make sure `iplist.txt` exists and contains one IP per line.
 
+## TO DO
+- Add a feature/flag that allows a script saved locally to be executed on the remote device.
+- In addition to the local script execution feature, add a dependency installer bash script that will run first for Python scripts with missing libraries on the remote device.
+
