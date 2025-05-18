@@ -1,5 +1,14 @@
 # MCMD - Multi-Command Remote Executor
-
+```
+                                 __
+   ____ ___  _________ ___  ____/ /
+  / __ `__ \/ ___/ __ `__ \/ __  /
+ / / / / / / /__/ / / / / / /_/ /
+/_/ /_/ /_/\___/_/ /_/ /_/\__,_/
+===================================
+   Multi-Command Remote Executor   
+===================================
+```
 MCMD is a Python script for running commands or scripts on multiple remote hosts via SSH. It is designed for flexibility, security, and ease of use, supporting both interactive and non-interactive password entry, logging, and robust argument parsing.
 
 ## Features
@@ -61,3 +70,4 @@ Runs the script on all IPs in `iplist.txt`, prints output, and logs results.
 - If you see a message about default values, update your `config.json`.
 - If you use an unsupported flag, you'll see a clear error and the help text.
 - Make sure `iplist.txt` exists and contains one IP per line.
+
