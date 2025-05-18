@@ -72,6 +72,7 @@ def run_command(command, commanddescription, port, username, password, defaultsh
 
 #Function to setup the SSH connection to the remote device and run the command it also handles logging and error handling
 def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=False, error=False, log=False):
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     try:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -79,7 +80,6 @@ def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=F
         stdin, stdout, stderr = client.exec_command(command)
         std_output = stdout.read().decode()
         std_error = stderr.read().decode()
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if std_output:
             if output:
                 print(f"Output from {ip}:\n{std_output}")
