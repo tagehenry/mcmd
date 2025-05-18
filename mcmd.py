@@ -129,6 +129,9 @@ def main():
     if args.script:
         print("======= Remote Script Mode ========\n")
 
+    if args.log:
+        print("========= Logging Enabled =========\n")
+
     #Uses the default password from the config file if the --unsecure or -u flag is used otherwhise it will prompt for a password
     if args.unsecure:
         password_to_use = password
