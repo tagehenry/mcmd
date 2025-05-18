@@ -16,7 +16,7 @@ MCMD is a Python script for running commands or scripts on multiple remote hosts
 - **Configurable via JSON**: All connection and command details are stored in `config.json` for easy editing and separation from code.
 - **Secure Password Handling**: By default, the script prompts for the SSH password at runtime. Optionally, you can use the `--unsecure` flag to use the password from the config file (not recommended for production).
 - **Argument Parsing with Error Handling**: Uses argparse to handle command-line arguments. If unsupported flags are used, the script displays a clear error message and help text.
-- **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts, or run a command as specified in the config.
+- **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts (this will execute a script that is on the remote device), or run a command as specified in the config.
 - **Verbose and Error Output**: Use `--verbose` to display command output, and `-vv` to display both output and errors.
 - **Logging**: Use `--log` to save all output and errors to `output.log`.
 - **IP List Management**: Reads target IPs from `iplist.txt`. Warns if the file is missing or empty.
@@ -31,7 +31,7 @@ python3 mcmd.py [OPTIONS]
 ### Options
 
 - `--unsecure`, `-u`   : Use the password from `config.json` instead of prompting (not recommended for production)
-- `--script`, `-s`     : Run the script specified in the config on remote hosts
+- `--script`, `-s`     : Run the script specified in the config on remote hosts (this will execute a script that is on the remote device)
 - `--verbose`, `-v`    : Display command output in the console
 - `-vv`                : Display both output and errors in the console
 - `--log`, `-l`        : Log all output and errors to `output.log`
