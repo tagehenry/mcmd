@@ -11,12 +11,23 @@
 ```
 MCMD is a Python script for running commands or scripts on multiple remote hosts via SSH. It is designed for flexibility, security, and ease of use, supporting both interactive and non-interactive password entry, logging, and robust argument parsing.
 
+## Requirements
+
+- Python 3.x
+- paramiko
+
+## Installation
+
+```bash
+pip install paramiko
+```
+
 ## Features
 
 - **Configurable via JSON**: All connection and command details are stored in `config.json` for easy editing and separation from code.
 - **Secure Password Handling**: By default, the script prompts for the SSH password at runtime. Optionally, you can use the `--unsecure` flag to use the password from the config file (not recommended for production).
 - **Argument Parsing with Error Handling**: Uses argparse to handle command-line arguments. If unsupported flags are used, the script displays a clear error message and help text.
-- **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts (this will execute a script that is on the remote device), or run a command as specified in the config.
+- **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts, or run a command as specified in the config.
 - **Verbose and Error Output**: Use `--verbose` to display command output, and `-vv` to display both output and errors.
 - **Logging**: Use `--log` to save all output and errors to `output.log`.
 - **IP List Management**: Reads target IPs from `iplist.txt`. Warns if the file is missing or empty.
@@ -31,7 +42,7 @@ python3 mcmd.py [OPTIONS]
 ### Options
 
 - `--unsecure`, `-u`   : Use the password from `config.json` instead of prompting (not recommended for production)
-- `--script`, `-s`     : Run the script specified in the config on remote hosts (this will execute a script that is on the remote device)
+- `--script`, `-s`     : Run the script specified in the config on remote hosts
 - `--verbose`, `-v`    : Display command output in the console
 - `-vv`                : Display both output and errors in the console
 - `--log`, `-l`        : Log all output and errors to `output.log`
@@ -72,6 +83,5 @@ Runs the script on all IPs in `iplist.txt`, prints output, and logs results.
 - Make sure `iplist.txt` exists and contains one IP per line.
 
 ## TO DO
-- Add a feature/flag that allows a script saved locally to be executed on the remote device.
-- In addition to the local script execution feature, add a dependency installer bash script that will run first for Python scripts with missing libraries on the remote device.
-
+- Add a feature / flag that allows for a script that is saved locally to be executed on the remote device
+- In addition to the local script execution feature add a dependendency installer bash script that will run first for python scripts that have missing libraries on the remote device
