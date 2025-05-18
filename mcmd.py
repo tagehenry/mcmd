@@ -5,6 +5,17 @@ import datetime
 import json
 import getpass
 
+mcmdart = """
+                                 __
+   ____ ___  _________ ___  ____/ /
+  / __ `__ \/ ___/ __ `__ \/ __  /
+ / / / / / / /__/ / / / / / /_/ /
+/_/ /_/ /_/\___/_/ /_/ /_/\__,_/
+===================================
+   Multi-Command Remote Executor   
+===================================
+"""
+
 def config():
     #Opens the config file in read mode
     try:
@@ -89,6 +100,7 @@ def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=F
         client.close()
 
 def main():
+    print(mcmdart)
     port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script = config()
     parser = argparse.ArgumentParser(description='Run a command on a list of IPs.')
 
