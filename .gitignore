@@ -2,6 +2,8 @@
 config.json
 # Ignore log files
 output.log
+# Ignore IP list
+ip_list.txt
 # Ignore Python cache and environment files
 __pycache__/
 *.pyc
