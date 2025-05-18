@@ -115,7 +115,7 @@ def main():
     parser = argparse.ArgumentParser(description='Run a command on a list of IPs.')
 
     parser.add_argument('--unsecure', '-u', action='store_true', help='Will not ask for a password and will use the default password in the config file')
-    parser.add_argument('--script', '-s', action='store_true', help='Runs an existing script on the remote device')
+    parser.add_argument('--script', '-s', action='store_true', help='Runs a script that exists on the remote device')
     parser.add_argument('--verbose', '-v', action='store_true', help='Will display the output of the command in the console')
     parser.add_argument('-vv', action='store_true', help='Will show the output and errors of the command in the console')
     parser.add_argument('--log', '-l', action='store_true', help='Log all standard output to output.log')
@@ -125,6 +125,9 @@ def main():
         print(f"Unsupported flag(s): {' '.join(unknown)}")
         parser.print_help()
         exit(2)
+    
+    if args.script:
+        print("======= Remote Script Mode ========\n")
 
     #Uses the default password from the config file if the --unsecure or -u flag is used otherwhise it will prompt for a password
     if args.unsecure:
