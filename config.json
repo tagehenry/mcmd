@@ -4,6 +4,6 @@
     "port": 22,
     "showerrorsdefault": true,
     "script_path": "/path/to/your/script.sh",
-    "command": "ip",
+    "command": "command to run on remote device",
     "commanddescription": "mcmd"
 }
