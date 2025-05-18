@@ -83,7 +83,7 @@ Runs the script on all IPs in `iplist.txt`, prints output, and logs results.
 - Make sure `iplist.txt` exists and contains one IP per line.
 
 ## Author
-Your Name (your.email@example.com)
+Tage Henry (tage199819@gmail.com)
 
 ## TO DO
 - Add a feature/flag that allows a script saved locally to be executed on the remote device.
