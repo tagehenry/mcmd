@@ -60,7 +60,7 @@ iplist.txt should contain one IP address per line, e.g.:
 
 ## Configuration
 
-Edit `config.json` to set your connection and command details. Example:
+Copy `config_default.json` to `config.json` and edit it to set your connection and command details. Example:
 
 ```
 {
