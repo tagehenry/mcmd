@@ -49,14 +49,23 @@ python3 mcmd.py [OPTIONS]
 
 If you use an unsupported flag, the script will display a message and show the help text.
 
+## IP List Example
+
+iplist.txt should contain one IP address per line, e.g.:
+```
+192.168.1.10
+192.168.1.11
+10.0.0.5
+```
+
 ## Configuration
 
 Edit `config.json` to set your connection and command details. Example:
 
-```json
+```
 {
     "username": "youruser",
-    "password": "yourpassword", // Only used with --unsecure
+    "password": "yourpassword",
     "port": 22,
     "showerrorsdefault": true,
     "script_path": "/path/to/your/script.sh",
@@ -64,7 +73,8 @@ Edit `config.json` to set your connection and command details. Example:
     "commanddescription": "List directory contents"
 }
 ```
-**Note:** JSON does not support comments. Remove any `//` lines before running.
+
+**Note:** The `password` field is only used when the `-u` or `--unsecure` flag is provided.
 
 ## Security Notes
 - **Do not store real passwords in `config.json` unless using `--unsecure` for testing.**
