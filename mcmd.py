@@ -1,12 +1,12 @@
 #!/bin/python3
+# Author: Tage Henry <tage199819@gmail.com>
+# Description: Multi-Command Remote Executor for running commands/scripts on multiple remote hosts via SSH.
+
 import argparse
 import paramiko
 import datetime
 import json
 import getpass
-
-# This script is a multi-command remote executor that allows you to run commands on multiple remote devices using SSH.
-# It uses a config file to store the SSH credentials and the command or remote script to run
 
 # ASCII art header for the script
 mcmdart = """
@@ -59,15 +59,23 @@ def run_command(command, commanddescription, port, username, password, defaultsh
         print("The file iplist.txt is empty")
         exit()
 
-    #Write header to log if logging is enabled which includes a timestamp and the command description provided from the config file
     if log:
-        with open('output.log', 'a') as logfile:
-            logfile.write(f"\n=== Running {commanddescription} at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ===\n")
-
+        with open('mcmd.log', 'a') as logfile:
+            logfile.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [INFO] Starting Multi-Command Remote Executor\n")
     #Itterates throught the list of IPs
     for ip in ip_list:
         ip = ip.strip()
-        print(f"Running {commanddescription} on IP: ", ip)
+        if log:
+            if commanddescription.startswith('Remote Script:'):
+                logfile_msg = f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [INFO] Running script '{commanddescription[14:]}' on {ip}"
+            else:
+                logfile_msg = f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [INFO] Running {commanddescription} on {ip}"
+            with open('mcmd.log', 'a') as logfile:
+                logfile.write(logfile_msg + "\n")
+        if commanddescription.startswith('Remote Script:'):
+            print(f"Running script on IP: {ip}")
+        else:
+            print(f"Running {commanddescription} on IP: ", ip)
         setup_ssh(ip, command, port, username, password, defaultshowerrors, output=output, error=error, log=log)
 
 #Function to setup the SSH connection to the remote device and run the command it also handles logging and error handling
@@ -84,25 +92,25 @@ def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=F
             if output:
                 print(f"Output from {ip}:\n{std_output}")
             if log:
-                with open('output.log', 'a') as logfile:
-                    logfile.write(f"[{timestamp}] Output from {ip}:\n{std_output}\n")
+                with open('mcmd.log', 'a') as logfile:
+                    logfile.write(f"{timestamp} [INFO] Output from {ip}: {std_output.strip()}\n")
         if std_error:
             if error or defaultshowerrors:
                 print(f"Error from {ip}:\n{std_error}")
             if log:
-                with open('output.log', 'a') as logfile:
-                    logfile.write(f"[{timestamp}] Error from {ip}:\n{std_error}\n")
+                with open('mcmd.log', 'a') as logfile:
+                    logfile.write(f"{timestamp} [ERROR] Error from {ip}: {std_error.strip()}\n")
     except paramiko.SSHException as e:
         print(f"Failed to connect to {ip}: {e}")
         if log:
-            with open('output.log', 'a') as logfile:
-                logfile.write(f"[{timestamp}] Failed to connect to {ip}: {e}\n")
+            with open('mcmd.log', 'a') as logfile:
+                logfile.write(f"{timestamp} [ERROR] Failed to connect to {ip}: {e}\n")
         return
     except Exception as e:
         print(f"An error occurred while connecting to {ip}: {e}")
         if log:
-            with open('output.log', 'a') as logfile:
-                logfile.write(f"[{timestamp}] An error occurred while connecting to {ip}: {e}\n")
+            with open('mcmd.log', 'a') as logfile:
+                logfile.write(f"{timestamp} [ERROR] An error occurred while connecting to {ip}: {e}\n")
         return
     finally:
         client.close()
@@ -118,7 +126,7 @@ def main():
     parser.add_argument('--script', '-s', action='store_true', help='Runs a script that exists on the remote device')
     parser.add_argument('--verbose', '-v', action='store_true', help='Will display the output of the command in the console')
     parser.add_argument('-vv', action='store_true', help='Will show the output and errors of the command in the console')
-    parser.add_argument('--log', '-l', action='store_true', help='Log all standard output to output.log')
+    parser.add_argument('--log', '-l', action='store_true', help='Log all standard output to mcmd.log')
     args, unknown = parser.parse_known_args()
     #If there is an unsupported flag it will print the help message and exit
     if unknown:

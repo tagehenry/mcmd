@@ -29,7 +29,7 @@ pip install paramiko
 - **Argument Parsing with Error Handling**: Uses argparse to handle command-line arguments. If unsupported flags are used, the script displays a clear error message and help text.
 - **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts, or run a command as specified in the config.
 - **Verbose and Error Output**: Use `--verbose` to display command output, and `-vv` to display both output and errors.
-- **Logging**: Use `--log` to save all output and errors to `output.log`.
+- **Logging**: Use `--log` to save all output and errors to `mcmd.log`.
 - **IP List Management**: Reads target IPs from `iplist.txt`. Warns if the file is missing or empty.
 - **Default Value Warnings**: Warns if you are using default values for script path or command, prompting you to update your config.
 
@@ -45,7 +45,7 @@ python3 mcmd.py [OPTIONS]
 - `--script`, `-s`     : Run the script specified in the config on remote hosts
 - `--verbose`, `-v`    : Display command output in the console
 - `-vv`                : Display both output and errors in the console
-- `--log`, `-l`        : Log all output and errors to `output.log`
+- `--log`, `-l`        : Log all output and errors to `mcmd.log`
 
 If you use an unsupported flag, the script will display a message and show the help text.
 
@@ -88,3 +88,4 @@ Tage Henry (tage199819@gmail.com)
 ## TO DO
 - Add a feature/flag that allows a script saved locally to be executed on the remote device.
 - In addition to the local script execution feature, add a dependency installer bash script that will run first for Python scripts with missing libraries on the remote device.
+- Improve logging when -s or --script is used
