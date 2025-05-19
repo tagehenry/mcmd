@@ -35,15 +35,14 @@ def config():
             command = config.get('command', 'command to run on remote device')
             commanddescription = config.get('commanddescription', 'mcmd')
             script_path = config.get('script_path', '/path/to/your/script.sh')
+            remote_script = f'nohup bash {script_path} > /dev/null 2>&1 &'
+            return port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script
     except FileNotFoundError:
-        print("The file config.json was not found")
+        print("The file config.json was not found. Please copy config_default.json to config.json and edit it with your settings.")
         exit()
     except json.JSONDecodeError:
         print("Error decoding JSON from config.json")
         exit()
-    finally:
-        remote_script = f'nohup bash {script_path} > /dev/null 2>&1 &'
-        return port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script
 
 #Function to run the set command on the remote device, it will iterate through the iplist and run the command on each IP
 def run_command(command, commanddescription, port, username, password, defaultshowerrors, output=False, error=False, log=False):

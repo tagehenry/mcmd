@@ -60,7 +60,13 @@ iplist.txt should contain one IP address per line, e.g.:
 
 ## Configuration
 
-Copy `config_default.json` to `config.json` and edit it to set your connection and command details. Example:
+Copy `config_default.json` to `config.json` before first use:
+
+```bash
+cp config_default.json config.json
+```
+
+Edit `config.json` to set your connection and command details. Example:
 
 ```
 {
@@ -74,7 +80,7 @@ Copy `config_default.json` to `config.json` and edit it to set your connection a
 }
 ```
 
-**Note:** The `password` field is only used when the `-u` or `--unsecure` flag is provided.
+**Note:** The `password` field is only used when the `-u` or `--unsecure` flag is provided. For best security, do not store real passwords in `config.json` unless required for testing.
 
 ## Security Notes
 - **Do not store real passwords in `config.json` unless using `--unsecure` for testing.**
