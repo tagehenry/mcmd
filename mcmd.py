@@ -88,7 +88,7 @@ def run_command(command, commanddescription, port, username, password, defaultsh
                 output, error, log
             )
             futures.append(future)
-        # Optionally, wait for all to complete and handle exceptions
+        #Optionally, wait for all to complete and handle exceptions
         for future in concurrent.futures.as_completed(futures):
             try:
                 future.result()
@@ -175,28 +175,29 @@ def main():
             print("The default script path is being used, please edit the config.json file and change it to your own script path")
             exit()
         if args.verbose:
-            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log)
+            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log, threads=threads)
         elif args.vv:
-            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log)
+            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log, threads=threads)
         else:
-            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log)
+            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log, threads=threads)
 
     #If the --verbose or -v flag is used it will display the output of the command in the console
     elif args.verbose or args.vv:
         if "command to run on remote device" in command:
             print("The default command is being used, please edit the config.json file and change it to your own command")
             exit()
+        print(f"Max Threads: {threads}")
         if args.verbose:
-            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log)
+            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log, threads=threads)
         elif args.vv:
-            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log)
+            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log, threads=threads)
 
     #If no flags are used it will just run the command on the remote device
     else:
         if "command to run on remote device" in command:
             print("The default command is being used, please edit the config.json file and change it to your own command")
             exit()
-        run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log)
+        run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log, threads=threads)
 
 if __name__ == "__main__":
     main()
