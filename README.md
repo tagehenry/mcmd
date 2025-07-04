@@ -25,6 +25,7 @@ pip install paramiko
 ## Features
 
 - **Configurable via JSON**: All connection and command details are stored in `config.json` for easy editing and separation from code.
+- **Threaded Execution**: Run commands or scripts on multiple hosts concurrently. The number of parallel SSH connections is controlled by the `threads` value in `config.json` for faster execution on large IP lists.
 - **Secure Password Handling**: By default, the script prompts for the SSH password at runtime. Optionally, you can use the `--unsecure` flag to use the password from the config file (not recommended for production).
 - **Argument Parsing with Error Handling**: Uses argparse to handle command-line arguments. If unsupported flags are used, the script displays a clear error message and help text.
 - **Run Scripts or Commands**: Use the `--script` flag to run a script on remote hosts, or run a command as specified in the config.
@@ -76,11 +77,15 @@ Edit `config.json` to set your connection and command details. Example:
     "showerrorsdefault": true,
     "script_path": "/path/to/your/script.sh",
     "command": "ls -l",
-    "commanddescription": "List directory contents"
+    "commanddescription": "List directory contents",
+    "threads": 20
 }
 ```
 
-**Note:** The `password` field is only used when the `-u` or `--unsecure` flag is provided. For best security, do not store real passwords in `config.json` unless required for testing.
+
+**Note:**
+- The `threads` field controls how many SSH connections are made in parallel. Increase for faster execution, decrease if you experience connection issues or want to limit resource usage.
+- The `password` field is only used when the `-u` or `--unsecure` flag is provided. For best security, do not store real passwords in `config.json` unless required for testing.
 
 ## Security Notes
 - **Do not store real passwords in `config.json` unless using `--unsecure` for testing.**
