@@ -2,11 +2,13 @@
 # Author: Tage Henry <tage199819@gmail.com>
 # Description: Multi-Command Remote Executor for running commands/scripts on multiple remote hosts via SSH.
 
+
 import argparse
 import paramiko
 import datetime
 import json
 import getpass
+import concurrent.futures
 
 # ASCII art header for the script
 mcmdart = """
@@ -35,8 +37,9 @@ def config():
             command = config.get('command', 'command to run on remote device')
             commanddescription = config.get('commanddescription', 'mcmd')
             script_path = config.get('script_path', '/path/to/your/script.sh')
+            threads = config.get('threads', 20)
             remote_script = f'nohup bash {script_path} > /dev/null 2>&1 &'
-            return port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script
+            return port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script, threads
     except FileNotFoundError:
         print("The file config.json was not found. Please copy config_default.json to config.json and edit it with your settings.")
         exit()
@@ -45,12 +48,11 @@ def config():
         exit()
 
 #Function to run the set command on the remote device, it will iterate through the iplist and run the command on each IP
-def run_command(command, commanddescription, port, username, password, defaultshowerrors, output=False, error=False, log=False):
+def run_command(command, commanddescription, port, username, password, defaultshowerrors, output=False, error=False, log=False, threads=20):
     #Opens the IP list file in read mode (default)
     try:
         with open('iplist.txt') as file:
             ip_list = file.readlines()
-
     except FileNotFoundError:
         print("The file iplist.txt was not found")
         exit()
@@ -61,9 +63,8 @@ def run_command(command, commanddescription, port, username, password, defaultsh
     if log:
         with open('mcmd.log', 'a') as logfile:
             logfile.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [INFO] Starting Multi-Command Remote Executor\n")
-    #Itterates throught the list of IPs
-    for ip in ip_list:
-        ip = ip.strip()
+
+    def log_and_print(ip):
         if log:
             if commanddescription.startswith('Remote Script:'):
                 logfile_msg = f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} [INFO] Running script '{commanddescription[14:]}' on {ip}"
@@ -75,7 +76,24 @@ def run_command(command, commanddescription, port, username, password, defaultsh
             print(f"Running script on IP: {ip}")
         else:
             print(f"Running {commanddescription} on IP: ", ip)
-        setup_ssh(ip, command, port, username, password, defaultshowerrors, output=output, error=error, log=log)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+        futures = []
+        for ip in ip_list:
+            ip = ip.strip()
+            log_and_print(ip)
+            future = executor.submit(
+                setup_ssh,
+                ip, command, port, username, password, defaultshowerrors,
+                output, error, log
+            )
+            futures.append(future)
+        #Optionally, wait for all to complete and handle exceptions
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()
+            except Exception as exc:
+                print(f"A thread generated an exception: {exc}")
 
 #Function to setup the SSH connection to the remote device and run the command it also handles logging and error handling
 def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=False, error=False, log=False):
@@ -118,9 +136,7 @@ def setup_ssh(ip, command, port, username, password, defaultshowerrors, output=F
 #It will also prompt for a password if the --unsecure or -u flag is not used and display the ASCII art at the start
 def main():
     print(mcmdart)
-    port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script = config()
     parser = argparse.ArgumentParser(description='Run a command on a list of IPs.')
-
     parser.add_argument('--unsecure', '-u', action='store_true', help='Will not ask for a password and will use the default password in the config file')
     parser.add_argument('--script', '-s', action='store_true', help='Runs a script that exists on the remote device')
     parser.add_argument('--verbose', '-v', action='store_true', help='Will display the output of the command in the console')
@@ -132,7 +148,9 @@ def main():
         print(f"Unsupported flag(s): {' '.join(unknown)}")
         parser.print_help()
         exit(2)
-    
+
+    port, username, password, defaultshowerrors, command, commanddescription, script_path, remote_script, threads = config()
+
     if args.script:
         print("======= Remote Script Mode ========\n")
         commanddescription = f"Remote Script: {script_path}"
@@ -157,28 +175,29 @@ def main():
             print("The default script path is being used, please edit the config.json file and change it to your own script path")
             exit()
         if args.verbose:
-            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log)
+            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log, threads=threads)
         elif args.vv:
-            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log)
+            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log, threads=threads)
         else:
-            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log)
+            run_command(remote_script, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log, threads=threads)
 
     #If the --verbose or -v flag is used it will display the output of the command in the console
     elif args.verbose or args.vv:
         if "command to run on remote device" in command:
             print("The default command is being used, please edit the config.json file and change it to your own command")
             exit()
+        print(f"Max Threads: {threads}")
         if args.verbose:
-            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log)
+            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, log=args.log, threads=threads)
         elif args.vv:
-            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log)
+            run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, output=True, error=True, log=args.log, threads=threads)
 
     #If no flags are used it will just run the command on the remote device
     else:
         if "command to run on remote device" in command:
             print("The default command is being used, please edit the config.json file and change it to your own command")
             exit()
-        run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log)
+        run_command(command, commanddescription, port, username, password_to_use, defaultshowerrors, log=args.log, threads=threads)
 
 if __name__ == "__main__":
     main()
